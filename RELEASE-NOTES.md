@@ -31,6 +31,7 @@
   * Currently only supports SQL scripts: `post_deploy: [{sql_script: script.sql}]`
 * Added `snow spcs service execute-job` command, which supports creating and executing a job service in the current schema.
 * Added `snow app events` command to fetch logs and traces from local and customer app installations
+* Added `snow connection remove` command, which removes a connection from the configuration file.
 
 ## Fixes and improvements
 * Fixed problem with whitespaces in `snow connection add` command
