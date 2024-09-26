@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: LSP Contracts
+  version: 1.0.0
+paths:
+  /not_an_api:
+    post:
+      summary: Mock api to allow openapi-generator-cli to work with this file
+      responses:
+        '500':
+          description: not a real implementation
+components:
+  schemas:
+    Connection:
+      type: object
+      properties:
+        account:
+          type: string
+        user:
+          type: string
+    EnvOverrides:
+      type: object
+      additionalProperties:
+        type: string
+    Context:
+      type: object
+      properties:
+        connection:
+          $ref: '#/components/schemas/Connection'
+        env:
+          $ref: '#/components/schemas/EnvOverrides'
+        project_path:
+          type: string
+    CmdPocInput:
+      type: object
+      properties:
+        input_1:
+          type: string
+        input_2:
+          type: string
+    CmdPocOutput:
+      type: object
+      properties:
+        output_1:
+          type: string
+        output_2:
+          type: string
