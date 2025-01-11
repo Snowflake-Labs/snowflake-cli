@@ -9,12 +9,13 @@ from snowflake.cli._plugins.streamlit.streamlit_entity_model import (
     StreamlitEntityModel,
 )
 from snowflake.cli._plugins.workspace.context import ActionContext
-from snowflake.cli.api.entities.common import EntityBase, get_sql_executor
+from snowflake.cli.api.entities.bundle_and_deploy import BundleAndDeploy
+from snowflake.cli.api.entities.common import get_sql_executor
 from snowflake.cli.api.secure_path import SecurePath
 from snowflake.connector.cursor import SnowflakeCursor
 
 
-class StreamlitEntity(EntityBase[StreamlitEntityModel]):
+class StreamlitEntity(BundleAndDeploy[StreamlitEntityModel]):
     """
     A Streamlit app.
     """
@@ -45,9 +46,17 @@ class StreamlitEntity(EntityBase[StreamlitEntityModel]):
         return self._entity_model  # noqa
 
     def action_bundle(self, action_ctx: ActionContext, *args, **kwargs):
+
+        if self.model.depends_on:
+            dependent_entities = self.dependent_entities(action_ctx)
+            # TODO: we should sanitize the list to remove duplicates
+            for entity in dependent_entities:
+                if entity.supports("bundle"):
+                    entity.bundle()
+
         return self.bundle()
 
-    def action_deploy(self, action_ctx: ActionContext, *args, **kwargs):
+    def deploy(self, action_ctx: ActionContext, *args, **kwargs):
         # After adding bundle map- we should use it's mapping here
         # To copy artifacts to destination on stage.
 
@@ -149,14 +158,11 @@ class StreamlitEntity(EntityBase[StreamlitEntityModel]):
 
         return query + ";"
 
-    def get_drop_sql(self):
-        return f"DROP STREAMLIT {self._entity_model.fqn};"
+    def get_share_sql(self, to_role: str) -> str:
+        return f"GRANT USAGE ON STREAMLIT {self.model.fqn.sql_identifier} TO ROLE {to_role};"
 
     def get_execute_sql(self):
         return f"EXECUTE STREAMLIT {self._entity_model.fqn}();"
-
-    def get_share_sql(self, to_role: str) -> str:
-        return f"GRANT USAGE ON STREAMLIT {self.model.fqn.sql_identifier} TO ROLE {to_role};"
 
     def get_usage_grant_sql(self, app_role: str, schema: Optional[str] = None) -> str:
         entity_id = self.entity_id
