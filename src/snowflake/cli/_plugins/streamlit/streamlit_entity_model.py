@@ -20,6 +20,7 @@ from pydantic import Field, model_validator
 from snowflake.cli.api.project.schemas.entities.common import (
     EntityModelBase,
     ExternalAccessBaseModel,
+    GrantBaseModel,
     ImportsBaseModel,
 )
 from snowflake.cli.api.project.schemas.updatable_model import (
@@ -27,7 +28,9 @@ from snowflake.cli.api.project.schemas.updatable_model import (
 )
 
 
-class StreamlitEntityModel(EntityModelBase, ExternalAccessBaseModel, ImportsBaseModel):
+class StreamlitEntityModel(
+    EntityModelBase, ExternalAccessBaseModel, ImportsBaseModel, GrantBaseModel
+):
     type: Literal["streamlit"] = DiscriminatorField()  # noqa: A003
     title: Optional[str] = Field(
         title="Human-readable title for the Streamlit dashboard", default=None
