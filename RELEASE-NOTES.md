@@ -45,6 +45,7 @@
 * Add `snow spcs service metrics` command to fetch service metrics:
   * Supports filtering by service name, container name, instance ID, and time intervals (`--since`, `--until`).
   * Use `--all` to fetch all columns.
+* Added `depends_on` field for entities in `snowflake.yml` that allows to specify order of calling the entities
 * Added support for glob pattern (except `**`) in artifact paths in snowflake.yml for Streamlit.
 * Added support for glob pattern (except `**`) in artifact paths in snowflake.yml for Snowpark, requires ENABLE_SNOWPARK_GLOB_SUPPORT feature flag.
 * Added `--replace` flag to `snow spcs compute-pool create` command.
